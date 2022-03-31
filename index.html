@@ -1,17 +1,55 @@
 <html>
     <head>
         <title>int**</title>
+        <link href='https://fonts.googleapis.com/css?family=EB Garamond' rel='stylesheet'>
     </head>
     <body>
         <style>
-            body{
+            body {
                 margin: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: fixed;
+                flex-direction: column;
+                height: 75vh;
+                width: 100vw;
+                top: 0;
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+                font-family: 'EB Garamond';
+            }
+            form > div > input[type=text] {
+                width: 200px;
+                font-size: 16;
+                font-family: 'EB Garamond';
+                padding: 10px;
+                border-radius: 10px;
+                border-style: solid;
+                margin-right: 15px;
+            }
+            form > div > input[type=submit] {
+                font-size: 16;
+                font-family: 'EB Garamond';
+                padding: 10px;
+                border-radius: 10px;
+                border-width: 0;
+                background-color: black;
+                color: white;
+            }
+            form > label {
+                font-size: 16;
+                font-family: 'EB Garamond';
             }
         </style>
 
-        <p>JKBFJIKSB</p>
+        <h1>Integer Pointer Pointer</h1>
+        <form>
+            <div style="display: flex; margin-bottom: 15px;">
+                <input type="text" id="room-code" placeholder="Room Code">
+                <input type="submit" value="Enter">
+            </div>
+            <input type="checkbox" id="spectator-check">
+            <label for="spectator-check">Spectator?</label>
+        </form>
     </body>
 </html>
