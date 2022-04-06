@@ -1,7 +1,7 @@
 const socket = io('http://localhost:3000', { transports: ['websocket', 'polling', 'flashsocket'] });
 
-let player_number;
-let game_code;
+let player_number = undefined;
+let game_code = undefined;
 
 // Thanks to mplungjan at https://stackoverflow.com/questions/5384712/intercept-a-form-submit-in-javascript-and-prevent-normal-submission
 window.addEventListener("load", function() {
@@ -10,6 +10,7 @@ window.addEventListener("load", function() {
         let code = document.getElementById("room-code").value;
         let name = document.getElementById("player-name").value;
         if(code !== "" && name !== ""){
+            socket.emit("subscribe", {room: code});
             socket.emit("join_game", {name: name, code: code});
         }
     })
@@ -17,11 +18,13 @@ window.addEventListener("load", function() {
 
 socket.on("join_success", handle_join_success);
 function handle_join_success(data){
-    player_number = data.num;
-    game_code = data.game;
-    document.getElementById("code-display").innerHTML = game_code;
-    document.getElementById("name-display").innerHTML = document.getElementById("player-name").value;
-    document.getElementById("login-modal").remove();
+    if(player_number == undefined && game_code == undefined){
+        player_number = data.num;
+        game_code = data.game;
+        document.getElementById("code-display").innerHTML = game_code;
+        document.getElementById("name-display").innerHTML = document.getElementById("player-name").value;
+        document.getElementById("login-modal").remove();
+    }
 }
 
 socket.on("turn", handle_turn);
