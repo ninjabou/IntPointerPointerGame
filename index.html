@@ -5,20 +5,22 @@
     </head>
     <body>
         <style>
-            body {
+            .login {
                 margin: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: fixed;
                 flex-direction: column;
-                height: 75vh;
+                height: 100vh;
                 width: 100vw;
                 top: 0;
-                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+                left: 0;
+                background-color: white;
                 font-family: 'EB Garamond';
             }
             form > div > input[type=text] {
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
                 width: 200px;
                 font-size: 16;
                 font-family: 'EB Garamond';
@@ -28,6 +30,7 @@
                 margin-right: 15px;
             }
             form > div > input[type=submit] {
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
                 font-size: 16;
                 font-family: 'EB Garamond';
                 padding: 10px;
@@ -37,19 +40,44 @@
                 color: white;
             }
             form > label {
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
                 font-size: 16;
                 font-family: 'EB Garamond';
             }
+            #code-display, #name-display {
+                margin: 0;
+                margin-bottom: 10px;
+                padding: 10px;
+                border-radius: 10px;
+                border-width: 0;
+                background-color: white;
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+            }
+            .player-info {
+                position: fixed;
+                z-index: 1000;
+            }
         </style>
 
-        <h1>Integer Pointer Pointer</h1>
-        <form>
-            <div style="display: flex; margin-bottom: 15px;">
-                <input type="text" id="room-code" placeholder="Room Code">
-                <input type="submit" value="Enter">
-            </div>
-            <input type="checkbox" id="spectator-check">
-            <label for="spectator-check">Spectator?</label>
-        </form>
+        <div class="player-info">
+            <p id="code-display">No game joined yet.</p>
+            <p id="name-display">No name set yet.</p>
+        </div>
+
+        <div class="login" id="login-modal">
+            <h1 style="filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));">Integer Pointer Pointer</h1>
+            <form id="login-form">
+                <div style="display: flex; margin-bottom: 15px;">
+                    <input type="text" id="room-code" placeholder="Room Code">
+                    <input type="text" id="player-name" placeholder="Player Name">
+                    <input type="submit" value="Enter">
+                </div>
+                <input type="checkbox" id="spectator-check">
+                <label for="spectator-check">Spectator?</label>
+            </form>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+        <script src="index.js"></script>
     </body>
 </html>
