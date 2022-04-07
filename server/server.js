@@ -66,7 +66,7 @@ io.sockets.on("connection", socket => {
                         case "spades":
                             games[game_index].players[games[game_index].current_player].field.push(data.card);
                             break;
-                        case "clubs":
+                        case "hearts":
                             games[game_index].players[games[game_index].current_player].field.push(data.card);
                             break;
                         case "clubs":
@@ -192,7 +192,6 @@ function populate_deck(game_code){
 }
 
 function draw_card(game_code){
-    console.log("Drawing...");
     let game_index = games.findIndex(e => e.game_code === game_code);
     if(game_index >= 0){
         let removed_card = games[game_index].deck.splice(Math.floor(Math.random() * games[game_index].deck.length), 1)[0];

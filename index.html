@@ -44,7 +44,7 @@
                 font-size: 16;
                 font-family: 'EB Garamond';
             }
-            #code-display, #name-display {
+            #player-info > p {
                 margin: 0;
                 margin-bottom: 10px;
                 padding: 10px;
@@ -53,7 +53,7 @@
                 background-color: white;
                 filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
             }
-            .player-info {
+            #player-info {
                 position: fixed;
                 z-index: 1000;
             }
@@ -74,24 +74,31 @@
 
         <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: flex-end; justify-content: center;">
             <div style="display: flex; flex-direction: column;">
+                <p>Field:</p>
                 <form id="field-form">
                     <input type="submit" value="react">
                 </form>
+                <p>Hand:</p>
                 <form id="hand-form">
-                    <input type="radio" id="hand0" name="hand" value="0">
+                    <!-- <input type="radio" id="hand0" name="hand" value="0">
                     <label for="hand0" id="hand0-label"></label>
                     <input type="radio" id="hand1" name="hand" value="1">
                     <label for="hand1" id="hand1-label"></label>
                     <input type="radio" id="hand2" name="hand" value="2">
-                    <label for="hand2" id="hand2-label"></label>
+                    <label for="hand2" id="hand2-label"></label> -->
                     <input type="submit" value="play">
                 </form>
             </div>
         </div>
 
-        <div class="player-info">
+        <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: center; justify-content: center; pointer-events: none;">
+            <div id="opponent-container" style="display: flex; overflow: auto; max-width: 100%; pointer-events: auto;"></div>
+        </div>
+
+        <div id="player-info">
             <p id="code-display">No game joined yet.</p>
             <p id="name-display">No name set yet.</p>
+            <p id="points-display">No points yet.</p>
         </div>
 
         <div class="login" id="login-modal">
@@ -103,7 +110,7 @@
                     <input type="submit" value="Enter">
                 </div>
                 <input type="checkbox" id="spectator-check">
-                <label for="spectator-check">Spectator?</label>
+                <label for="spectator-check">Spectator? (Not implemented yet.)</label>
             </form>
         </div>
 
