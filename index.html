@@ -73,10 +73,19 @@
         </style>
 
         <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: flex-end; justify-content: center;">
-            <div id="hand-container">
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
+            <div style="display: flex; flex-direction: column;">
+                <form id="field-form">
+                    <input type="submit" value="react">
+                </form>
+                <form id="hand-form">
+                    <input type="radio" id="hand0" name="hand" value="0">
+                    <label for="hand0" id="hand0-label"></label>
+                    <input type="radio" id="hand1" name="hand" value="1">
+                    <label for="hand1" id="hand1-label"></label>
+                    <input type="radio" id="hand2" name="hand" value="2">
+                    <label for="hand2" id="hand2-label"></label>
+                    <input type="submit" value="play">
+                </form>
             </div>
         </div>
 
