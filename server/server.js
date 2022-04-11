@@ -13,7 +13,8 @@ io.sockets.on("connection", socket => {
                 name: data.name,
                 hand: [],
                 field: [],
-                points: 0
+                points: 0,
+                card_to_lose: null
             });
             
             populate_deck(data.code);
@@ -22,7 +23,8 @@ io.sockets.on("connection", socket => {
                 num: games[game_index].players.length - 1,
                 game: games[game_index].game_code,
                 hand: games[game_index].players[games[game_index].players.length - 1].hand,
-                field: games[game_index].players[games[game_index].players.length - 1].field
+                field: games[game_index].players[games[game_index].players.length - 1].field,
+                players: games[game_index].players
             });
             socket.emit("server_message", {data: "Player joined existing game."});
         } else {
@@ -59,6 +61,7 @@ io.sockets.on("connection", socket => {
         if(game_index >= 0){
             switch(games[game_index].phase){
                 case "play":
+                    let target = -1;
                     switch(data.card.suit){
                         case "diamonds":
                             games[game_index].players[games[game_index].current_player].points++;
@@ -70,7 +73,8 @@ io.sockets.on("connection", socket => {
                             games[game_index].players[games[game_index].current_player].field.push(data.card);
                             break;
                         case "clubs":
-                            // uhhhhh
+                            games[game_index].players[data.target_player].card_to_lose = data.target_card;
+                            target = data.target_player;
                             break;
                     }
 
@@ -82,11 +86,32 @@ io.sockets.on("connection", socket => {
                     io.sockets.in(games[game_index].game_code).emit("trigger", {
                         player: games[game_index].current_player,
                         players: games[game_index].players,
-                        card: data.card
+                        card: data.card,
+                        target: target,
+                        target_card: data.target_card
                     });
                     break;
                 case "trigger":
-                    // handle trigger
+                    if(data.card != null){
+                        if(data.card.suit === "spades"){
+                            games[game_index].players[data.player].points += 2;
+                            games[game_index].players[data.player].hand.splice(
+                                games[game_index].players[data.player].hand.findIndex(e => e.suit === data.card.suit && e.value === data.card.value), 1);
+                        }
+                        if(data.card.suit === "hearts"){
+                            games[game_index].players[data.player].hand.splice(
+                                games[game_index].players[data.player].hand.findIndex(e => e.suit === data.card.suit && e.value === data.card.value), 1);
+                            games[game_index].players[data.player].card_to_lose = null;
+                        } 
+                    } else {
+                        if(games[game_index].players[data.player].card_to_lose != null){
+                            let card_loser = games[game_index].players[data.player];
+                            card_loser.hand.splice(
+                                card_loser.hand.findIndex(e => e.suit === card_loser.card_to_lose.suit && e.value === card_loser.card_to_lose.value), 1);
+                            games[game_index].players[data.player].card_to_lose = null;
+                        }
+                    }
+                
                     games[game_index].waiting_for--;
                     if(games[game_index].waiting_for <= 0){
                         games[game_index].phase = "play";

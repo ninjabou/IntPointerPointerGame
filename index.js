@@ -8,6 +8,7 @@ let incoming_card = undefined;
 let players = [];
 let your_play = false;
 let your_trigger = false;
+let you_are_targeted = false;
 
 // Thanks to mplungjan at https://stackoverflow.com/questions/5384712/intercept-a-form-submit-in-javascript-and-prevent-normal-submission
 window.addEventListener("load", function() {
@@ -26,12 +27,12 @@ window.addEventListener("load", function() {
 
 socket.on("join_success", handle_join_success);
 function handle_join_success(data){
+    players = data.players;
     if(player_number == undefined && game_code == undefined){
         player_number = data.num;
         game_code = data.game;
         hand = data.hand;
         field = data.field;
-        update();
         document.getElementById("code-display").innerHTML = game_code;
         document.getElementById("name-display").innerHTML = document.getElementById("player-name").value;
         document.getElementById("player-info").style.visibility = "visible";
@@ -40,6 +41,7 @@ function handle_join_success(data){
             socket.emit("begin_game", {game_code: game_code});
         }
     }
+    update();
 }
 
 socket.on("play", handle_play);
@@ -49,6 +51,7 @@ function handle_play(data){
     players = data.players;
     update();
     if(data.player == player_number){
+        console.log("my play! " + player_number);
         your_play = true;
     }
 }
@@ -64,8 +67,16 @@ window.addEventListener("load", function() {
                 target_index = i;
             }
         }
-        if(cardcheck != null && targetcheck != null && your_play == true){
-            socket.emit("turn_taken", {game_code: game_code, card: hand[cardcheck.value], target: players[target_index].field[targetcheck.value]});
+        if(cardcheck != null && your_play == true && hand[cardcheck.value].suit === "clubs"){
+            if(targetcheck != null){
+                socket.emit("turn_taken", {game_code: game_code, card: hand[cardcheck.value], target_card: players[target_index].field[targetcheck.value], target_player: target_index});
+                your_play = false;
+            } else {
+                socket.emit("turn_taken", {game_code: game_code, card: hand[cardcheck.value], target_card: null, target_player: null});
+                your_play = false;
+            }
+        } else if(cardcheck != null && your_play == true && hand[cardcheck.value].suit !== "clubs"){
+            socket.emit("turn_taken", {game_code: game_code, card: hand[cardcheck.value], target_card: null, target_player: null});
             your_play = false;
         }
     })
@@ -79,20 +90,39 @@ function handle_trigger(data){
     incoming_card = data.card;
     update();
     if(data.player != player_number){
+        console.log("my trigger! " + player_number);
         your_trigger = true;
+        if(data.target == player_number){
+            you_are_targeted = true;
+        }
     } else {
-        socket.emit("turn_taken", {game_code: game_code, card: null});
+        socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
         your_trigger = false;
+        you_are_targeted = false;
         return;
     }
     if(field.length == 0){
-        socket.emit("turn_taken", {game_code: game_code, card: null});
+        socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
         your_trigger = false;
+        you_are_targeted = false;
+        return;
+    }
+    let num_hearts = 0;
+    for(let i = 0; i < field.length; i++){
+        if(field[i].suit === "hearts"){
+            num_hearts++;
+        }
+    }
+    if(incoming_card.suit === "clubs" && (field.find(e => e.suit === "hearts") == undefined || ((field.find(e => e.suit === "hearts") != undefined && num_hearts <= 1)))){
+        socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
+        your_trigger = false;
+        you_are_targeted = false;
         return;
     }
     if(incoming_card.suit === "hearts" || incoming_card.suit === "spades"){
-        socket.emit("turn_taken", {game_code: game_code, card: null});
+        socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
         your_trigger = false;
+        you_are_targeted = false;
         return;
     }
 }
@@ -103,28 +133,34 @@ window.addEventListener("load", function() {
         if(cardcheck != null && your_trigger == true){
             if(incoming_card.suit === "diamonds" && field[cardcheck.value].suit === "spades"){
                 if(field[cardcheck.value].value > incoming_card.value){
-                    socket.emit("turn_taken", {game_code: game_code, card: field[cardcheck.value]});
+                    socket.emit("turn_taken", {game_code: game_code, card: field[cardcheck.value], player: player_number});
                     your_trigger = false;
+                    you_are_targeted = false;
                 } else {
-                    socket.emit("turn_taken", {game_code: game_code, card: null});
+                    socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
                     your_trigger = false;
+                    you_are_targeted = false;
                 }
-            } else if(incoming_card.suit === "clubs" && field[cardcheck.value].suit === "hearts"){
+            } else if(incoming_card.suit === "clubs" && field[cardcheck.value].suit === "hearts" && you_are_targeted){
                 if(field[cardcheck.value].value > incoming_card.value){
-                    socket.emit("turn_taken", {game_code: game_code, card: field[cardcheck.value]});
+                    socket.emit("turn_taken", {game_code: game_code, card: field[cardcheck.value], player: player_number});
                     your_trigger = false;
+                    you_are_targeted = false;
                 } else {
-                    socket.emit("turn_taken", {game_code: game_code, card: null});
+                    socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
                     your_trigger = false;
+                    you_are_targeted = false;
                 }
             } else {
-                socket.emit("turn_taken", {game_code: game_code, card: null});
+                socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
                 your_trigger = false;
+                you_are_targeted = false;
             }
         }
         if(cardcheck == null && your_trigger == true){
-            socket.emit("turn_taken", {game_code: game_code, card: null});
+            socket.emit("turn_taken", {game_code: game_code, card: null, player: player_number});
             your_trigger = false;
+            you_are_targeted = false;
         }
     })
 });
