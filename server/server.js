@@ -21,10 +21,7 @@ io.sockets.on("connection", socket => {
 
             io.sockets.in(games[game_index].game_code).emit("join_success", {
                 num: games[game_index].players.length - 1,
-                game: games[game_index].game_code,
-                hand: games[game_index].players[games[game_index].players.length - 1].hand,
-                field: games[game_index].players[games[game_index].players.length - 1].field,
-                players: games[game_index].players
+                game: games[game_index]
             });
             socket.emit("server_message", {data: "Player joined existing game."});
         } else {
@@ -33,6 +30,7 @@ io.sockets.on("connection", socket => {
                 game_code: data.code,
                 win_state: -1,
                 current_player: 0,
+                last_card_played: null,
                 phase: "play",
                 players: [],
                 deck: [],
@@ -51,7 +49,7 @@ io.sockets.on("connection", socket => {
         let game_index = games.findIndex(e => e.game_code === data.game_code);
         if(game_index >= 0){
             draw_card(games[game_index].game_code);
-            io.sockets.in(games[game_index].game_code).emit("play", {player: games[game_index].current_player, players: games[game_index].players});
+            io.sockets.in(games[game_index].game_code).emit("play", {game: games[game_index]});
         }
     }
 
