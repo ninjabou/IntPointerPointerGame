@@ -1,10 +1,15 @@
 <html>
     <head>
         <title>int**</title>
+        <meta charset="UTF-8">
         <link href='https://fonts.googleapis.com/css?family=EB Garamond' rel='stylesheet'>
     </head>
     <body>
         <style>
+            ::-webkit-scrollbar {
+                width: 0;
+                background: transparent;
+            }
             .login {
                 margin: 0;
                 display: flex;
@@ -61,38 +66,65 @@
                 display: flex;
                 flex-direction: row;
             }
-            .card {
-                border-style: solid;
-                border-width: 2px;
-                border-color: black;
-                border-radius: 10px;
+            input[type="radio"] {
+                appearance: none;
                 height: 100px;
                 width: 100px;
                 margin: 15px;
+                border-style: solid;
+                border-width: 1px;
+                border-color: black;
+                border-radius: 10px;
+                background-color: white;
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+            }
+            input[type="radio"]:checked {
+                border-width: 5px;
+                animation-name: scrollcolor;
+                animation-duration: 1s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+            #hand-form > input[type="submit"], #field-form > input[type="submit"] {
+                filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+                font-size: 16;
+                font-family: 'EB Garamond';
+                height: 65px;
+                width: 65px;
+                padding: 10px;
+                border-radius: 10px;
+                border-width: 0;
+                background-color: black;
+                color: white;
+            }
+            @keyframes scrollcolor {
+                0% { border-color: #62abbf; }
+                50% { border-color: #bfb662; }
+                100% { border-color: #bf6287; }
             }
         </style>
 
-        <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: flex-end; justify-content: center;">
+        <div id="game-over" style="background-color: white; z-index: 10000; position: fixed; height: 100vh; width: 100vw; display: none; top: 0; left: 0; align-items: center; justify-content: center;"></div>
+
+        <div style="position: fixed; height: 100vh; max-height: 100vh; width: 100vw; max-width: 100vw; overflow-x: scroll; display: flex; top: 0; left: 0; align-items: flex-end; justify-content: center;">
             <div style="display: flex; flex-direction: column;">
                 <p>Field:</p>
-                <form id="field-form">
+                <form id="field-form" style="display: flex; flex-direction: row; align-items: center; overflow-x: scroll;">
                     <input type="submit" value="react">
                 </form>
                 <p>Hand:</p>
-                <form id="hand-form">
-                    <!-- <input type="radio" id="hand0" name="hand" value="0">
-                    <label for="hand0" id="hand0-label"></label>
-                    <input type="radio" id="hand1" name="hand" value="1">
-                    <label for="hand1" id="hand1-label"></label>
-                    <input type="radio" id="hand2" name="hand" value="2">
-                    <label for="hand2" id="hand2-label"></label> -->
+                <form id="hand-form" style="display: flex; flex-direction: row; align-items: center; overflow-x: scroll;">
                     <input type="submit" value="play">
                 </form>
             </div>
         </div>
 
+        <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: flex-begin; justify-content: center; pointer-events: none;">
+            <p id="last-played-card"></p>
+        </div>
+
         <div style="position: fixed; height: 100vh; width: 100vw; display: flex; top: 0; left: 0; align-items: center; justify-content: center; pointer-events: none;">
-            <div id="opponent-container" style="display: flex; overflow: auto; max-width: 100%; pointer-events: auto;"></div>
+            <div id="opponent-container" style="display: flex; flex-direction: row; overflow-x: scroll; max-width: 100%; pointer-events: auto;"></div>
         </div>
 
         <div id="player-info">
