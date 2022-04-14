@@ -1,4 +1,4 @@
-const socket = io('http://localhost:3000', { transports: ['websocket', 'polling', 'flashsocket'] });
+const socket = io('https://hidden-cove-62945.herokuapp.com/', { transports: ['websocket', 'polling', 'flashsocket'] });
 
 let this_player = undefined;
 let game = undefined;

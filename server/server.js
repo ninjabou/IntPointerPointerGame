@@ -137,7 +137,7 @@ io.sockets.on("connection", socket => {
     socket.on("unsubscribe", function(data){ socket.leave(data.room); });
 });
 
-io.listen(3000);
+io.listen(process.env.PORT || 3000);
 
 function populate_deck(game_code){
     let game_index = games.findIndex(e => e.game_code === game_code);
