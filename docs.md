@@ -10,6 +10,7 @@
     * All of the assets for the game are either stock HTML elements or custom CSS styles. For the revision, I would like to have more CSS-styled elements, as stock HTML tends to look bad, but stock HTML is quicker to write.
 * **Prototype Closest Other Game:** Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here.
     * The card game Tycoon/Capitalism was the inspiration for having suits represent discrete actions, however, that game has different actions by number, not by suit.
+* **Changes From Last Reivision:** The game now works, and is hosted online. The game has also receieved a significant visual overhaul.
 * **High Concept:** A one-sentence summary of your game.
     * The goal of the game is to get as many points as you can before the deck is emptied, using direct and indirect methods.
     * I followed Youtube user Hungry Turtle Code's tutorial on socket.io in order to set up a local server for the game.
